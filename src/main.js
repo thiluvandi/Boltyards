@@ -536,7 +536,9 @@ renderer.setAnimationLoop(() => {
 });
 
 // ---------- Intro / modes ----------
-let classicMode = false;
+// the landing page is the default; the 3D world only renders while the user is driving
+let classicMode = true;
+canvas.style.display = 'none';
 requestAnimationFrame(() => requestAnimationFrame(() => $('intro').classList.add('ready')));
 // make sure the web font is in before the sign textures are painted
 if (document.fonts?.load) {
@@ -549,71 +551,37 @@ function rebuildSignTextures() {
   scene.traverse((o) => { if (o.material?.map?.isCanvasTexture) o.material.map.needsUpdate = true; });
 }
 
-$('start').onclick = () => {
-  started = true;
-  audio.start();
-  $('intro').classList.add('gone');
-  $('hud').hidden = false;
-  document.body.classList.remove('classic');
-};
+$('start').onclick = () => enterGame();
 
-// ---------- Classic site ----------
-function buildClassic() {
-  const el = $('classicSite');
-  const works = BUILDINGS.filter((b) => b.url || b.kind);
-  el.innerHTML = `
-    <nav class="c-nav"><b>BOLT YARDS</b><button class="btn small" id="toWorld">Drive through our world →</button></nav>
-    <section class="c-hero">
-      <h1>${BRAND.tagline}</h1>
-      <p>${BRAND.sub}</p>
-      <a class="btn dark" href="#contact">Get in touch</a>
-    </section>
-    <section class="c-section"><h2>What we do</h2>
-      <div class="c-grid">
-        <div class="c-card"><h3>SaaS</h3><p>Custom software products and internal systems, from first prototype to a platform that runs the business.</p></div>
-        <div class="c-card"><h3>Websites</h3><p>Fast, clean websites built to convert, for businesses, NGOs and everyone in between.</p></div>
-        <div class="c-card"><h3>Ad Campaigns</h3><p>Performance campaigns that bring the right customers to the right door.</p></div>
-      </div>
-    </section>
-    <section class="c-section"><h2>Our work</h2>
-      <div class="c-grid">${works.map((b) => `
-        <${b.url ? `a href="${b.url}" target="_blank" rel="noopener"` : 'div'} class="c-card">
-          <span class="tag-chip">${b.kind}</span><h3>${b.title}</h3><p>${b.body}</p>
-        </${b.url ? 'a' : 'div'}>`).join('')}
-      </div>
-    </section>
-    <section class="c-section"><h2>Founder</h2><div class="c-card" style="max-width:640px"><h3>Aditya Reddy</h3><p>${BUILDINGS.find((b) => b.id === 'about').body}</p></div></section>
-    <footer class="c-foot" id="contact">
-      <h2 style="letter-spacing:.35em;font-size:12px;color:#fdc20b;margin-bottom:20px">CONTACT</h2>
-      <p><a href="tel:${BRAND.phone}">${BRAND.phone}</a></p>
-      <p><a href="mailto:${BRAND.email}">${BRAND.email}</a></p>
-      <p>${BRAND.address}</p>
-    </footer>`;
-  $('toWorld').onclick = enterWorld;
-}
-buildClassic();
-
-function enterClassic() {
-  classicMode = true;
-  audio.setActive(false);
-  $('intro').classList.add('gone');
-  $('hud').hidden = true;
-  closePanel();
-  canvas.style.display = 'none';
-  $('classicSite').hidden = false;
-  document.body.classList.add('classic');
-  scrollTo(0, 0);
-}
-function enterWorld() {
+function enterGame() {
   classicMode = false;
-  audio.start();
-  canvas.style.display = '';
-  $('classicSite').hidden = true;
   started = true;
+  $('landing').hidden = true;
+  canvas.style.display = '';
   $('hud').hidden = false;
-  document.body.classList.remove('classic');
+  document.documentElement.classList.add('playing');
+  document.body.classList.add('playing');
+  scrollTo(0, 0);
+  resize();
+  clock.getDelta(); // don't let the time spent on the landing page become one giant physics step
+  audio.start();
 }
-$('classic').onclick = enterClassic;
+function enterLanding(toContent) {
+  classicMode = true;
+  started = false;
+  audio.setActive(false);
+  closePanel();
+  for (const k in keys) keys[k] = false;
+  for (const k in touchKeys) touchKeys[k] = false;
+  $('hud').hidden = true;
+  $('prompt').hidden = true;
+  canvas.style.display = 'none';
+  $('landing').hidden = false;
+  document.documentElement.classList.remove('playing');
+  document.body.classList.remove('playing');
+  if (toContent) $('what').scrollIntoView(); else scrollTo(0, 0);
+}
+window.addEventListener('by:enter-game', () => enterGame());
 const muteBtn = $('mute');
 const ICON_ON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
 const ICON_OFF = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m16 9 6 6"/><path d="m22 9-6 6"/></svg>';
@@ -627,6 +595,6 @@ const nextCam = () => { camView = (camView + 1) % CAM_VIEWS.length; paintCam(); 
 camBtn.onclick = nextCam;
 addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'c' && started && !panelOpen) nextCam(); });
 paintCam();
-$('toClassic').onclick = enterClassic;
+$('toClassic').onclick = () => enterLanding(true);
 
 if (import.meta.env.DEV) window.__bolt = { state, zones, keys, touchKeys, car };

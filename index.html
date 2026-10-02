@@ -11,17 +11,24 @@
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
-    <!-- Intro -->
+    <div id="landing">
+    <!-- Intro / hero -->
     <div id="intro">
       <span class="logo-mark intro-logo" role="img" aria-label="Bolt Yards logo"></span>
       <h1>BOLT YARDS</h1>
       <p class="tag">TECH FOR A BRIGHTER TOMORROW</p>
+      <p class="lede">We build digital systems that scale.</p>
       <div class="intro-actions">
         <button id="start" class="btn dark">Start Driving</button>
-        <button id="classic" class="btn ghost">Skip to classic site</button>
+        <button id="classic" class="btn ghost">Explore our work ↓</button>
       </div>
       <p class="hint">W A S D to drive · Shift boost · Space jump · E interact</p>
       <div id="loading">Loading world…</div>
+      <a class="scroll-cue" href="#what" aria-label="Scroll to explore"><i></i></a>
+    </div>
+
+    <!-- Classic site: continues below the landing hero -->
+    <main id="classicSite"></main>
     </div>
 
     <canvas id="world"></canvas>
@@ -64,9 +71,6 @@
       </div>
     </div>
 
-    <!-- Classic site (SEO + fallback) -->
-    <main id="classicSite" hidden></main>
-
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/site.js"></script>
   </body>
 </html>
