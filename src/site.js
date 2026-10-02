@@ -38,20 +38,17 @@ buildClassic();
 buildClassic();
 $('classic').onclick = () => $('what').scrollIntoView({ behavior: 'smooth' });
 
-// ---------- The game is desktop-only ----------
-const isMobile =
-  matchMedia('(pointer: coarse)').matches ||
-  innerWidth < 700 ||
-  /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-
-if (isMobile) {
-  // no 3D code, model or audio is ever downloaded on phones/tablets
-  document.documentElement.classList.add('no-game');
-  $('intro').classList.add('ready');
-} else {
-  const game = import('./main.js');
-  $('toWorld').onclick = async () => {
-    await game;
-    window.dispatchEvent(new Event('by:enter-game'));
-  };
-}
+// ---------- The game (loaded in the background; same on desktop and mobile) ----------
+let loaded = false;
+const load = () => import('./main.js').then(() => { loaded = true; });
+const game = new Promise((res) => {
+  const go = () => load().then(res);
+  // let the page paint first, then fetch the 3D code
+  ('requestIdleCallback' in window) ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 300);
+});
+const enter = async () => {
+  if (!loaded) await game; // normally already loaded; otherwise wait for it
+  window.dispatchEvent(new Event('by:enter-game'));
+};
+$('start').onclick = enter;
+$('toWorld').onclick = enter;

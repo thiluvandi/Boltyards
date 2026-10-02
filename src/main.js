@@ -14,8 +14,9 @@ const CAR_YAW = 0; // rotate the model so its nose points along +z
 
 // ---------- Renderer / scene ----------
 const canvas = document.getElementById('world');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const TOUCH = matchMedia('(pointer: coarse)').matches;
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !TOUCH });
+renderer.setPixelRatio(Math.min(devicePixelRatio, TOUCH ? 1.5 : 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -29,7 +30,7 @@ scene.add(new THREE.HemisphereLight(0xffffff, 0xe8dcb0, 1.1));
 const sun = new THREE.DirectionalLight(0xfff1cc, 2.2);
 sun.position.set(60, 90, 40);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(TOUCH ? 1024 : 2048, TOUCH ? 1024 : 2048);
 Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 1, far: 260 });
 sun.shadow.bias = -0.0005;
 sun.shadow.normalBias = 0.04;
@@ -332,8 +333,13 @@ addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 document.querySelectorAll('#touch button').forEach((btn) => {
   const k = btn.dataset.k;
-  btn.addEventListener('pointerdown', (e) => { e.preventDefault(); touchKeys[k] = true; if (k === 'interact') interact(); });
-  ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => btn.addEventListener(ev, () => (touchKeys[k] = false)));
+  btn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    touchKeys[k] = true;
+    try { btn.setPointerCapture(e.pointerId); } catch { /* ignore */ } // keeps the press alive if the thumb slides off
+    btn.classList.add('held');
+  });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => btn.addEventListener(ev, () => { touchKeys[k] = false; btn.classList.remove('held'); }));
 });
 
 // ---------- Panel ----------
@@ -359,6 +365,8 @@ function openPanel(b) {
 }
 function closePanel() { panelOpen = false; $('panel').hidden = true; }
 $('close').onclick = closePanel;
+$('prompt').addEventListener('click', () => interact());
+document.addEventListener('contextmenu', (e) => { if (started) e.preventDefault(); }); // no long-press menu while driving
 $('panel').addEventListener('click', (e) => { if (e.target === $('panel')) closePanel(); });
 
 function interact() {
@@ -551,8 +559,6 @@ if (document.fonts?.load) {
 function rebuildSignTextures() {
   scene.traverse((o) => { if (o.material?.map?.isCanvasTexture) o.material.map.needsUpdate = true; });
 }
-
-$('start').onclick = () => enterGame();
 
 function enterGame() {
   classicMode = false;

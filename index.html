@@ -22,7 +22,7 @@
         <button id="start" class="btn dark">Start Driving</button>
         <button id="classic" class="btn ghost">Explore our work ↓</button>
       </div>
-      <p class="hint">W A S D to drive · Shift boost · Space jump · E interact</p>
+      <p class="hint"><span class="kbd-only">W A S D to drive · Shift boost · Space jump · E interact</span><span class="touch-only">Steer with ◀ ▶ · hold GAS to drive · tap to enter buildings</span></p>
       <div id="loading">Loading world…</div>
       <a class="scroll-cue" href="#what" aria-label="Scroll to explore"><i></i></a>
     </div>
@@ -43,16 +43,18 @@
       <button id="mute" class="btn small" aria-label="Toggle sound"></button>
       <button id="cam" class="btn small" aria-label="Change camera"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Chase view</span></button>
       <button id="toClassic" class="btn small">Classic site</button>
-      <div id="prompt" hidden>Press <kbd>E</kbd> to enter <b id="promptName"></b></div>
+      <div id="prompt" hidden><span class="kbd-only">Press <kbd>E</kbd> to enter</span><span class="touch-only">Tap to enter</span> <b id="promptName"></b></div>
       <div id="controls-help">WASD drive · Shift boost · Space jump · E interact · C camera · M sound</div>
       <div id="speed"><b id="speedVal">0</b> km/h</div>
       <canvas id="minimap" width="160" height="160"></canvas>
       <div id="touch">
-        <div class="pad">
-          <button data-k="left">◀</button><button data-k="up">▲</button><button data-k="down">▼</button><button data-k="right">▶</button>
+        <div class="steer">
+          <button data-k="left" aria-label="Steer left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg></button>
+          <button data-k="right" aria-label="Steer right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg></button>
         </div>
-        <div class="pad right">
-          <button data-k="boost">⚡</button><button data-k="jump">⤒</button><button data-k="interact">E</button>
+        <div class="pedals">
+          <button class="brake" data-k="down" aria-label="Brake">BRAKE</button>
+          <button class="gas" data-k="up" aria-label="Gas">GAS</button>
         </div>
       </div>
     </div>

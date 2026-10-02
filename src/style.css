@@ -49,16 +49,6 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 #speed b { color: var(--yellow); font-size: 20px; }
 #minimap { position: absolute; top: 70px; right: 20px; width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--black); background: rgba(255,255,255,.85); }
 
-#touch { display: none; position: absolute; inset: auto 0 14px 0; justify-content: space-between; padding: 0 14px; pointer-events: none; }
-#touch .pad { display: grid; grid-template-columns: repeat(2, 64px); gap: 8px; pointer-events: auto; }
-#touch .pad.right { grid-template-columns: repeat(3, 58px); align-items: end; }
-#touch button { height: 58px; border-radius: 50%; border: 2px solid var(--black); background: rgba(253,194,11,.92); font-size: 20px; font-weight: 800; touch-action: none; user-select: none; }
-@media (pointer: coarse) {
-  #touch { display: flex; }
-  #controls-help { display: none; }
-  #speed { bottom: 100px; }
-  #prompt { bottom: 22%; }
-}
 
 /* Panel */
 #panel { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
@@ -100,10 +90,52 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 #mute svg { flex: none; }
 #cam { position: absolute; top: 108px; left: 20px; display: inline-flex; align-items: center; gap: 8px; }
 
-/* Phones and tablets get the scrolling site only: no game entry points */
-.no-game #start, .no-game #toWorld, .no-game #intro .hint, .no-game #loading, .no-game #hud, .no-game canvas#world { display: none !important; }
-.no-game .intro-actions .ghost { background: var(--black); color: var(--yellow); }
 
 .c-nav-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
 .c-cta { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
 @media (max-width: 560px) { .c-nav { padding: 12px 16px; } .c-nav b { letter-spacing: .22em; font-size: 12px; } }
+
+/* ---------- Touch controls (phones & tablets): steer left/right, GAS and BRAKE ---------- */
+.touch-only { display: none; }
+#touch { display: none; }
+@media (pointer: coarse) {
+  .kbd-only { display: none; }
+  .touch-only { display: inline; }
+  #controls-help { display: none; }
+  #touch { display: flex; }
+  #speed { bottom: auto; top: 64px; left: 50%; right: auto; transform: translateX(-50%); padding: 6px 12px; }
+  #prompt { bottom: 190px; padding: 16px 26px; font-size: 16px; cursor: pointer; }
+  html.playing, body.playing { overscroll-behavior: none; touch-action: none; }
+}
+#touch { position: absolute; left: 0; right: 0; bottom: max(18px, env(safe-area-inset-bottom)); justify-content: space-between; align-items: flex-end; padding: 0 max(18px, env(safe-area-inset-left)); pointer-events: none; }
+#touch > div { display: flex; gap: 14px; align-items: flex-end; pointer-events: auto; }
+#touch button { border: 3px solid var(--black); font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: .12em; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; transition: transform .06s, background .06s; }
+#touch .steer button { width: 84px; height: 84px; border-radius: 50%; background: rgba(255,255,255,.9); display: grid; place-items: center; }
+#touch .steer svg { width: 38px; height: 38px; fill: none; stroke: var(--black); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+#touch .gas { width: 112px; height: 112px; border-radius: 50%; background: var(--yellow); color: var(--black); font-size: 17px; box-shadow: 0 6px 0 var(--black); }
+#touch .brake { width: 78px; height: 78px; border-radius: 50%; background: var(--black); color: var(--yellow); font-size: 11px; }
+#touch button.held { transform: scale(.94); background: #fff; }
+#touch .gas.held { background: #ffd84d; box-shadow: 0 2px 0 var(--black); transform: translateY(4px); }
+#touch .brake.held { background: #333; }
+
+@media (max-width: 560px) {
+  #hud .brand { padding: 8px 10px; }
+  #hud .brand span:last-child { display: none; }
+  #hud #visited { font-size: 11px; padding: 7px 12px; }
+  #hud #toClassic { right: 12px; top: 16px; padding: 8px 12px; }
+  #hud .brand { left: 12px; top: 16px; }
+  #mute, #cam { left: 12px; padding: 0; width: 38px; height: 38px; justify-content: center; }
+  #mute { top: 62px; } #cam { top: 108px; }
+  #mute span, #cam span { display: none; }
+  #minimap { width: 96px; height: 96px; top: 62px; right: 12px; }
+}
+
+@media (max-width: 560px) {
+  #touch { padding: 0 12px; }
+  #touch > div { gap: 10px; }
+  #touch .steer button { width: 70px; height: 70px; }
+  #touch .steer svg { width: 32px; height: 32px; }
+  #touch .gas { width: 96px; height: 96px; font-size: 15px; }
+  #touch .brake { width: 64px; height: 64px; font-size: 10px; }
+  #prompt { bottom: 150px; }
+}
