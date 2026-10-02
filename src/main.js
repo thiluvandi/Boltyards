@@ -424,7 +424,7 @@ function openPanel(b) {
     ? `<div class="contact-row"><i>📞</i><a href="tel:${BRAND.phone}">${BRAND.phone}</a></div>
        <div class="contact-row"><i>✉</i><a href="mailto:${BRAND.email}">${BRAND.email}</a></div>
        <div class="contact-row"><i>📍</i><span>${BRAND.address}</span></div>
-       <a class="btn dark" style="margin-top:22px" href="/contact.html">Send us a message</a>`
+       <a class="btn dark" href="/contact.html">Send us a message →</a>`
     : '';
   const link = $('pLink');
   if (b.url) { link.href = b.url; link.hidden = false; } else link.hidden = true;

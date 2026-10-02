@@ -61,7 +61,10 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 .card p#pBody { line-height: 1.7; color: #333; font-size: 15px; }
 #pTags { margin: 18px 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
 .tag-chip { display: inline-block; max-width: 100%; font-size: 11px; line-height: 1.3; letter-spacing: .1em; padding: 6px 14px; border-radius: 16px; background: var(--yellow); color: var(--black); font-weight: 700; text-transform: uppercase; }
-#pExtra a, .contact-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; color: var(--black); text-decoration: none; font-size: 15px; }
+.contact-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; color: var(--black); font-size: 15px; }
+.contact-row a { color: inherit; text-decoration: none; }
+.contact-row a:hover { text-decoration: underline; }
+#pExtra a.btn { display: flex; justify-content: center; margin-top: 22px; color: var(--yellow); text-decoration: none; }
 .contact-row i { width: 36px; height: 36px; border-radius: 50%; background: var(--yellow); display: grid; place-items: center; font-style: normal; flex: none; }
 #pLink { margin-top: 22px; }
 
