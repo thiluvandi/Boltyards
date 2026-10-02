@@ -92,7 +92,8 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 
 
 .c-nav-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-.c-cta { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+.c-foot .c-cta { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+.c-foot .c-cta:hover { background: #fff; border-color: #fff; }
 @media (max-width: 560px) { .c-nav { padding: 12px 16px; } .c-nav b { letter-spacing: .22em; font-size: 12px; } }
 
 /* ---------- Touch controls (phones & tablets): steer left/right, GAS and BRAKE ---------- */
@@ -142,3 +143,4 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 
 canvas#world { touch-action: none; cursor: grab; }
 canvas#world.grabbing { cursor: grabbing; }
+a.btn { color: var(--black); text-decoration: none; }

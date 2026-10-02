@@ -1,4 +1,8 @@
 import { BRAND } from './content.js';
+import { captureAttribution, attributionFields, initAnalytics } from './attribution.js';
+
+captureAttribution();
+initAnalytics();
 
 // Enquiries are emailed to the Bolt Yards inbox through FormSubmit (https://formsubmit.co).
 // The first ever submission asks the inbox owner to click an activation link.
@@ -81,6 +85,7 @@ form.addEventListener('submit', async (e) => {
     budget: v('budget') || 'Not specified',
     timeline: v('timeline') || 'Flexible',
     message: v('message'),
+    ...attributionFields(), // where this visitor came from (e.g. reddit / social / r_webdev)
     _subject: `New enquiry (${v('service')}) from ${v('name')}`,
     _template: 'table',
     _captcha: 'false',

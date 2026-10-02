@@ -1,4 +1,8 @@
 import { BRAND, BUILDINGS } from './content.js';
+import { captureAttribution, initAnalytics } from './attribution.js';
+
+captureAttribution();
+initAnalytics();
 
 const $ = (id) => document.getElementById(id);
 
