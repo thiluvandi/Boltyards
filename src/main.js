@@ -284,6 +284,7 @@ function plateTexture(text) {
 // Wheels are found from the tyre meshes; nearby small parts (rims, caps) go with them.
 function rigWheels(root) {
   root.updateMatrixWorld(true);
+  const inv = root.matrixWorld.clone().invert();
   const tmpBox = new THREE.Box3(), tmpC = new THREE.Vector3(), tmpS = new THREE.Vector3();
   const meshes = [];
   root.traverse((o) => {
@@ -295,19 +296,29 @@ function rigWheels(root) {
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     meshes.push({ o, c: tmpC.clone(), size: Math.max(tmpS.x, tmpS.y, tmpS.z), tyre: mats.some((m) => m.name === '930_tire') });
   });
-  const tyres = meshes.filter((m) => m.tyre);
-  const rig = { steer: [], spin: [], radius: 0.5 };
-  tyres.forEach((t) => {
+  const rig = { steer: [], spin: [], radius: 0.5, yaw: [] };
+  meshes.filter((m) => m.tyre).forEach((t) => {
+    // The front wheels in this model are modelled already turned, so their axle is not along the car's X axis.
+    // Find the real axle (the tyre's narrowest local axis) and measure its yaw so we can spin around it.
+    const gs = t.o.geometry.boundingBox.getSize(new THREE.Vector3());
+    const axis = new THREE.Vector3(...(gs.x <= gs.y && gs.x <= gs.z ? [1, 0, 0] : gs.y <= gs.z ? [0, 1, 0] : [0, 0, 1]));
+    const dir = axis.transformDirection(t.o.matrixWorld).transformDirection(inv);
+    if (dir.x < 0) dir.negate();
+    const yaw = Math.atan2(-dir.z, dir.x); // yaw (about +y) that takes car-X onto the axle
+
     const parts = meshes.filter((m) => m.size < 1.2 && m.c.distanceTo(t.c) < 0.62);
     const steer = new THREE.Group();
     steer.position.copy(t.c);
     root.add(steer);
+    const align = new THREE.Group(); // turns the spin axis onto the real axle
+    align.rotation.y = yaw;
+    steer.add(align);
     const spin = new THREE.Group();
-    steer.add(spin);
+    align.add(spin);
     root.updateMatrixWorld(true);
     parts.forEach((p) => spin.attach(p.o)); // keeps each part exactly where it was
     rig.spin.push(spin);
-    if (t.c.z > 0) rig.steer.push(steer); // nose is +z: front wheels steer
+    if (t.c.z > 0) { rig.steer.push(steer); rig.yaw.push(yaw); } // nose is +z: front wheels steer
     rig.radius = t.size / 2;
   });
   return rig;
@@ -471,6 +482,24 @@ const camPos = new THREE.Vector3(0, 8, 40);
 const look = new THREE.Vector3();
 let t = 0;
 
+// free-look orbit (click/touch and drag on the scene)
+const orbit = { yaw: 0, pitch: 0, dragging: false, last: 0, id: null };
+canvas.addEventListener('pointerdown', (e) => {
+  if (!started || panelOpen || orbit.dragging || (e.pointerType === 'mouse' && e.button !== 0)) return;
+  orbit.dragging = true; orbit.id = e.pointerId; orbit.last = performance.now();
+  try { canvas.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+  canvas.classList.add('grabbing');
+});
+canvas.addEventListener('pointermove', (e) => {
+  if (!orbit.dragging || e.pointerId !== orbit.id) return;
+  orbit.yaw -= e.movementX * 0.006;   // drag right: swing the camera round to the left
+  orbit.pitch += e.movementY * 0.005; // drag down: camera rises
+  orbit.pitch = Math.max(-0.8, Math.min(1.1, orbit.pitch));
+  orbit.last = performance.now();
+});
+const endDrag = (e) => { if (e.pointerId !== orbit.id) return; orbit.dragging = false; orbit.id = null; orbit.last = performance.now(); canvas.classList.remove('grabbing'); };
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach((ev) => canvas.addEventListener(ev, endDrag));
+
 // camera angles: far chase view and a close behind-the-car view (toggle with C)
 const CAM_VIEWS = [
   { name: 'Close view', dist: 5.5, height: 2.2 },
@@ -521,7 +550,8 @@ function update(dt) {
   if (rig) {
     const roll = (state.v * dt) / rig.radius;
     rig.spin.forEach((w) => (w.rotation.x += roll));
-    rig.steer.forEach((g) => (g.rotation.y = state.steer * 0.5)); // up to ~29 degrees, + is left
+    // net wheel angle = steering only: cancel the angle the model has baked in
+    rig.steer.forEach((g, i) => (g.rotation.y = state.steer * 0.5 - rig.yaw[i])); // up to ~29 degrees, + is left
   } else {
     car.userData.wheels.forEach((w) => (w.rotation.x += state.v * dt * 1.8));
   }
@@ -534,12 +564,25 @@ function update(dt) {
   } else {
     const ox = -Math.sin(state.h), oz = -Math.cos(state.h);
     const view = CAM_VIEWS[camView];
-    const cd = view.dist;
-    const tx = state.x + ox * cd, tz = state.z + oz * cd, ty = view.height + state.y * 0.5 + Math.abs(state.v) * 0.04;
-    camPos.x += (tx - camPos.x) * Math.min(1, 5 * dt);
-    camPos.y += (ty - camPos.y) * Math.min(1, 5 * dt);
-    camPos.z += (tz - camPos.z) * Math.min(1, 5 * dt);
-    look.set(state.x - ox * 5, 1.5, state.z - oz * 5);
+    // free look: drag to orbit around the car; it eases back behind the car while driving
+    if (!orbit.dragging && Math.abs(state.v) > 2 && performance.now() - orbit.last > 1500) {
+      const k = Math.min(1, 2.5 * dt);
+      orbit.yaw -= orbit.yaw * k;
+      orbit.pitch -= orbit.pitch * k;
+    }
+    const h0 = view.height + state.y * 0.5 + Math.abs(state.v) * 0.04;
+    const r = Math.hypot(view.dist, h0);
+    const elev = Math.min(1.4, Math.max(0.1, Math.atan2(h0, view.dist) + orbit.pitch));
+    const az = state.h + Math.PI + orbit.yaw;
+    const tx = state.x + Math.sin(az) * Math.cos(elev) * r;
+    const tz = state.z + Math.cos(az) * Math.cos(elev) * r;
+    const ty = Math.max(0.7, Math.sin(elev) * r);
+    const lerpK = Math.min(1, (orbit.dragging ? 14 : 5) * dt);
+    camPos.x += (tx - camPos.x) * lerpK;
+    camPos.y += (ty - camPos.y) * lerpK;
+    camPos.z += (tz - camPos.z) * lerpK;
+    const ahead = 5 * Math.max(0, Math.cos(orbit.yaw)); // look past the car when behind it, at the car when orbiting
+    look.set(state.x - ox * ahead, 1.5, state.z - oz * ahead);
   }
   camera.position.copy(camPos);
   camera.lookAt(look);
@@ -639,7 +682,7 @@ paintMute();
 addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'm' && started) muteBtn.click(); });
 const camBtn = $('cam');
 const paintCam = () => { camBtn.querySelector('span').textContent = CAM_VIEWS[camView].name; };
-const nextCam = () => { camView = (camView + 1) % CAM_VIEWS.length; paintCam(); };
+const nextCam = () => { camView = (camView + 1) % CAM_VIEWS.length; orbit.yaw = 0; orbit.pitch = 0; paintCam(); };
 camBtn.onclick = nextCam;
 addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'c' && started && !panelOpen) nextCam(); });
 paintCam();

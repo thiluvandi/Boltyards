@@ -139,3 +139,6 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
   #touch .brake { width: 64px; height: 64px; font-size: 10px; }
   #prompt { bottom: 150px; }
 }
+
+canvas#world { touch-action: none; cursor: grab; }
+canvas#world.grabbing { cursor: grabbing; }
