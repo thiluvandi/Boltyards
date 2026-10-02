@@ -1,0 +1,101 @@
+:root {
+  --yellow: #fdc20b;
+  --black: #111;
+  --white: #fff;
+  --grey: #6b6b6b;
+  --line: #e4e4e4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Montserrat', system-ui, sans-serif; color: var(--black); background: #f5f3ec; overflow: hidden; }
+body.classic { overflow: auto; }
+[hidden] { display: none !important; }
+canvas#world { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+.btn { font: 600 13px 'Montserrat'; letter-spacing: .12em; text-transform: uppercase; padding: 14px 26px; border-radius: 999px; border: 2px solid var(--black); cursor: pointer; text-decoration: none; display: inline-block; transition: transform .15s, background .15s; }
+.btn:hover { transform: translateY(-2px); }
+.btn.dark { background: var(--black); color: var(--yellow); }
+.btn.ghost { background: transparent; color: var(--black); }
+.btn.small { padding: 8px 14px; font-size: 11px; background: var(--white); }
+
+/* Intro */
+#intro { position: fixed; inset: 0; z-index: 50; background: var(--yellow); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; transition: opacity .6s, visibility .6s; }
+#intro.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+
+#intro h1 { font-weight: 600; letter-spacing: .5em; font-size: clamp(26px, 6vw, 54px); margin-right: -.5em; }
+#intro .tag { margin-top: 18px; font-size: 12px; letter-spacing: .5em; font-weight: 500; }
+.intro-actions { margin-top: 42px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+#intro .hint { margin-top: 28px; font-size: 12px; letter-spacing: .1em; opacity: .7; }
+#loading { position: absolute; bottom: 24px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
+#intro.ready #loading { display: none; }
+#intro:not(.ready) .intro-actions .dark { opacity: .4; pointer-events: none; }
+
+/* HUD */
+#hud { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+#hud > * { pointer-events: auto; }
+.brand { position: absolute; top: 18px; left: 20px; display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .3em; font-size: 12px; background: rgba(255,255,255,.85); backdrop-filter: blur(6px); padding: 8px 14px; border-radius: 999px; }
+
+#visited { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); background: var(--black); color: var(--yellow); font-size: 12px; letter-spacing: .1em; padding: 8px 16px; border-radius: 999px; }
+#toClassic { position: absolute; top: 18px; right: 20px; }
+#prompt { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); background: var(--black); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 14px; letter-spacing: .04em; border: 2px solid var(--yellow); animation: pulse 1.2s infinite; }
+#prompt b { color: var(--yellow); }
+kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-radius: 6px; font-weight: 700; }
+@keyframes pulse { 50% { transform: translateX(-50%) translateY(-4px); } }
+#controls-help { position: absolute; bottom: 18px; left: 20px; font-size: 11px; letter-spacing: .08em; background: rgba(255,255,255,.85); padding: 8px 12px; border-radius: 8px; }
+#speed { position: absolute; bottom: 18px; right: 20px; background: var(--black); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 12px; }
+#speed b { color: var(--yellow); font-size: 20px; }
+#minimap { position: absolute; top: 70px; right: 20px; width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--black); background: rgba(255,255,255,.85); }
+
+#touch { display: none; position: absolute; inset: auto 0 14px 0; justify-content: space-between; padding: 0 14px; pointer-events: none; }
+#touch .pad { display: grid; grid-template-columns: repeat(2, 64px); gap: 8px; pointer-events: auto; }
+#touch .pad.right { grid-template-columns: repeat(3, 58px); align-items: end; }
+#touch button { height: 58px; border-radius: 50%; border: 2px solid var(--black); background: rgba(253,194,11,.92); font-size: 20px; font-weight: 800; touch-action: none; user-select: none; }
+@media (pointer: coarse) {
+  #touch { display: flex; }
+  #controls-help { display: none; }
+  #speed { bottom: 100px; }
+  #prompt { bottom: 22%; }
+}
+
+/* Panel */
+#panel { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+.card { position: relative; background: #fff; max-width: 520px; width: 100%; border-radius: 22px; padding: 38px 34px 34px; border-top: 8px solid var(--yellow); box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: pop .25s ease-out; max-height: 90vh; overflow: auto; }
+@keyframes pop { from { transform: scale(.92); opacity: 0; } }
+#close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--black); color: var(--yellow); cursor: pointer; font-size: 14px; }
+.kind { font-size: 11px; letter-spacing: .3em; color: #b88900; text-transform: uppercase; font-weight: 600; }
+.card h2 { font-size: 28px; font-weight: 700; margin-top: 8px; line-height: 1.2; }
+.bar { width: 48px; height: 4px; background: var(--yellow); margin: 18px 0; }
+.card p#pBody { line-height: 1.7; color: #333; font-size: 15px; }
+#pTags { margin: 18px 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-chip { display: inline-block; max-width: 100%; font-size: 11px; line-height: 1.3; letter-spacing: .1em; padding: 6px 14px; border-radius: 16px; background: var(--yellow); color: var(--black); font-weight: 700; text-transform: uppercase; }
+#pExtra a, .contact-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; color: var(--black); text-decoration: none; font-size: 15px; }
+.contact-row i { width: 36px; height: 36px; border-radius: 50%; background: var(--yellow); display: grid; place-items: center; font-style: normal; flex: none; }
+#pLink { margin-top: 22px; }
+
+/* Classic site */
+#classicSite { position: relative; min-height: 100%; background: #fff; }
+.c-nav { position: sticky; top: 0; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); display: flex; justify-content: space-between; align-items: center; padding: 16px 6vw; border-bottom: 1px solid var(--line); z-index: 5; }
+.c-nav b { letter-spacing: .35em; font-size: 13px; }
+.c-hero { background: var(--yellow); padding: 14vh 6vw; }
+.c-hero h1 { font-size: clamp(34px, 7vw, 80px); font-weight: 700; max-width: 14ch; line-height: 1.05; }
+.c-hero p { margin-top: 22px; letter-spacing: .3em; font-size: 12px; text-transform: uppercase; }
+.c-hero .btn { margin-top: 34px; }
+.c-section { padding: 9vh 6vw; }
+.c-section h2 { font-size: 12px; letter-spacing: .35em; text-transform: uppercase; color: #b88900; margin-bottom: 30px; }
+.c-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+.c-card { border: 1px solid var(--line); border-radius: 18px; padding: 26px; transition: border-color .2s, transform .2s; text-decoration: none; color: inherit; display: block; }
+.c-card:hover { border-color: var(--yellow); transform: translateY(-4px); }
+.c-card h3 { margin: 8px 0 10px; font-size: 20px; }
+.c-card p { color: #444; font-size: 14px; line-height: 1.6; }
+.c-foot { background: var(--black); color: #fff; padding: 8vh 6vw; }
+.c-foot a { color: var(--yellow); }
+.c-foot p { margin: 8px 0; }
+
+/* Logo (traced from the brand mark; colour via CSS mask) */
+.logo-mark { display: inline-block; aspect-ratio: 259 / 233; background: currentColor; -webkit-mask: url('./logo.svg') center / contain no-repeat; mask: url('./logo.svg') center / contain no-repeat; }
+.intro-logo { width: 120px; color: #fff; margin-bottom: 22px; }
+.hud-logo { width: 24px; color: var(--yellow); }
+.brand .hud-logo { background: var(--black); }
+#mute { position: absolute; top: 64px; left: 20px; }
+#mute { display: inline-flex; align-items: center; gap: 8px; }
+#mute svg { flex: none; }
+#cam { position: absolute; top: 108px; left: 20px; display: inline-flex; align-items: center; gap: 8px; }

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bolt Yards | We build digital systems that scale</title>
+    <meta name="description" content="Bolt Yards builds SaaS products, websites and ad campaigns. Drive through our world to see our work." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon-v2.svg" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!-- Intro -->
+    <div id="intro">
+      <span class="logo-mark intro-logo" role="img" aria-label="Bolt Yards logo"></span>
+      <h1>BOLT YARDS</h1>
+      <p class="tag">TECH FOR A BRIGHTER TOMORROW</p>
+      <div class="intro-actions">
+        <button id="start" class="btn dark">Start Driving</button>
+        <button id="classic" class="btn ghost">Skip to classic site</button>
+      </div>
+      <p class="hint">W A S D to drive · Shift boost · Space jump · E interact</p>
+      <div id="loading">Loading world…</div>
+    </div>
+
+    <canvas id="world"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" hidden>
+      <div class="brand">
+        <span class="logo-mark hud-logo" aria-hidden="true"></span>
+        <span>BOLT YARDS</span>
+      </div>
+      <div id="visited">Explored <b id="vcount">0</b>/<span id="vtotal">8</span></div>
+      <button id="mute" class="btn small" aria-label="Toggle sound"></button>
+      <button id="cam" class="btn small" aria-label="Change camera"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Chase view</span></button>
+      <button id="toClassic" class="btn small">Classic site</button>
+      <div id="prompt" hidden>Press <kbd>E</kbd> to enter <b id="promptName"></b></div>
+      <div id="controls-help">WASD drive · Shift boost · Space jump · E interact · C camera · M sound</div>
+      <div id="speed"><b id="speedVal">0</b> km/h</div>
+      <canvas id="minimap" width="160" height="160"></canvas>
+      <div id="touch">
+        <div class="pad">
+          <button data-k="left">◀</button><button data-k="up">▲</button><button data-k="down">▼</button><button data-k="right">▶</button>
+        </div>
+        <div class="pad right">
+          <button data-k="boost">⚡</button><button data-k="jump">⤒</button><button data-k="interact">E</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel -->
+    <div id="panel" hidden>
+      <div class="card">
+        <button id="close" aria-label="Close">✕</button>
+        <p class="kind" id="pKind"></p>
+        <h2 id="pTitle"></h2>
+        <div class="bar"></div>
+        <p id="pBody"></p>
+        <div id="pTags"></div>
+        <div id="pExtra"></div>
+        <a id="pLink" class="btn dark" target="_blank" rel="noopener" hidden>Visit project ↗</a>
+      </div>
+    </div>
+
+    <!-- Classic site (SEO + fallback) -->
+    <main id="classicSite" hidden></main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
