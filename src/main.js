@@ -261,6 +261,29 @@ const car = new THREE.Group();
 }
 scene.add(car);
 
+// soft contact shadow under the car so it sits on the road (the sun shadow alone falls to one side)
+const contact = (() => {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 256;
+  const g = c.getContext('2d');
+  g.translate(64, 128); g.scale(1, 2);
+  const grd = g.createRadialGradient(0, 0, 0, 0, 0, 62);
+  grd.addColorStop(0, 'rgba(0,0,0,0.95)');
+  grd.addColorStop(0.62, 'rgba(0,0,0,0.75)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grd; g.fillRect(-64, -64, 128, 128);
+  const mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.5, 7.2),
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, opacity: 0.8, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 })
+  );
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.renderOrder = 2;
+  const holder = new THREE.Group();
+  holder.add(mesh);
+  scene.add(holder);
+  return { holder, mesh };
+})();
+
 // licence plate texture: black text on white with a thin border
 function plateTexture(text) {
   const c = document.createElement('canvas');
@@ -349,7 +372,7 @@ function rigWheels(root) {
     const c = box.getCenter(new THREE.Vector3());
     const k = 6.6 / Math.max(size.x, size.z);
     model.scale.setScalar(k);
-    model.position.set(-c.x * k, -box.min.y * k, -c.z * k);
+    model.position.set(-c.x * k, -box.min.y * k - 0.04, -c.z * k); // sink the tyres 4cm into the asphalt so they visibly sit on it
     const holder = new THREE.Group();
     holder.rotation.y = CAR_YAW;
     holder.add(model);
@@ -543,6 +566,11 @@ function update(dt) {
   }
 
   car.position.set(state.x, state.y, state.z);
+  // the contact shadow stays on the road: it shrinks and fades as the car jumps
+  contact.holder.position.set(state.x, 0.036, state.z);
+  contact.holder.rotation.y = state.h;
+  contact.holder.scale.setScalar(1 + state.y * 0.12);
+  contact.mesh.material.opacity = 0.8 / (1 + state.y * 1.4);
   car.rotation.y = state.h;
   car.rotation.z = -state.steer * Math.min(1, Math.abs(state.v) / 30) * 0.08;
   car.rotation.x = state.y > 0 ? -state.vy * 0.015 : 0;
@@ -688,4 +716,4 @@ addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'c' && started 
 paintCam();
 $('toClassic').onclick = () => enterLanding(true);
 
-if (import.meta.env.DEV) window.__bolt = { state, zones, keys, touchKeys, car, audio };
+if (import.meta.env.DEV) window.__bolt = { state, zones, keys, touchKeys, car, audio, orbit, contact };
