@@ -103,3 +103,7 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 /* Phones and tablets get the scrolling site only: no game entry points */
 .no-game #start, .no-game #toWorld, .no-game #intro .hint, .no-game #loading, .no-game #hud, .no-game canvas#world { display: none !important; }
 .no-game .intro-actions .ghost { background: var(--black); color: var(--yellow); }
+
+.c-nav-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.c-cta { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+@media (max-width: 560px) { .c-nav { padding: 12px 16px; } .c-nav b { letter-spacing: .22em; font-size: 12px; } }

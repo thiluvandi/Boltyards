@@ -4,7 +4,7 @@ export const BRAND = {
   sub: 'Tech for a brighter tomorrow',
   phone: '8050923559',
   email: 'boltyardsindia@gmail.com',
-  address: '#243, 5th A Main, Gnanabharthi Layout, Kengeri S.T-560059',
+  address: '#243, 5th A Main, Gnanabharthi Layout, Kengeri S.T, Bengaluru - 560059',
 };
 
 // Each building: world position (x, z), footprint (w, d), height, content for the panel.
