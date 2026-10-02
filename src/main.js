@@ -280,6 +280,39 @@ function plateTexture(text) {
   return t;
 }
 
+// Gives each wheel its own pivot so the front pair can steer and all four can roll.
+// Wheels are found from the tyre meshes; nearby small parts (rims, caps) go with them.
+function rigWheels(root) {
+  root.updateMatrixWorld(true);
+  const tmpBox = new THREE.Box3(), tmpC = new THREE.Vector3(), tmpS = new THREE.Vector3();
+  const meshes = [];
+  root.traverse((o) => {
+    if (!o.isMesh || !o.visible) return;
+    o.geometry.computeBoundingBox();
+    tmpBox.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);
+    tmpBox.getCenter(tmpC); tmpBox.getSize(tmpS);
+    root.worldToLocal(tmpC);
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    meshes.push({ o, c: tmpC.clone(), size: Math.max(tmpS.x, tmpS.y, tmpS.z), tyre: mats.some((m) => m.name === '930_tire') });
+  });
+  const tyres = meshes.filter((m) => m.tyre);
+  const rig = { steer: [], spin: [], radius: 0.5 };
+  tyres.forEach((t) => {
+    const parts = meshes.filter((m) => m.size < 1.2 && m.c.distanceTo(t.c) < 0.62);
+    const steer = new THREE.Group();
+    steer.position.copy(t.c);
+    root.add(steer);
+    const spin = new THREE.Group();
+    steer.add(spin);
+    root.updateMatrixWorld(true);
+    parts.forEach((p) => spin.attach(p.o)); // keeps each part exactly where it was
+    rig.spin.push(spin);
+    if (t.c.z > 0) rig.steer.push(steer); // nose is +z: front wheels steer
+    rig.radius = t.size / 2;
+  });
+  return rig;
+}
+
 // swap the placeholder box car for the Porsche model once it has loaded
 {
   const placeholder = [...car.children];
@@ -312,6 +345,7 @@ function plateTexture(text) {
     placeholder.forEach((p) => car.remove(p));
     car.userData.wheels = [];
     car.add(holder);
+    car.userData.rig = rigWheels(car);
   });
 }
 
@@ -483,7 +517,14 @@ function update(dt) {
   car.rotation.y = state.h;
   car.rotation.z = -state.steer * Math.min(1, Math.abs(state.v) / 30) * 0.08;
   car.rotation.x = state.y > 0 ? -state.vy * 0.015 : 0;
-  car.userData.wheels.forEach((w) => (w.rotation.x += state.v * dt * 1.8));
+  const rig = car.userData.rig;
+  if (rig) {
+    const roll = (state.v * dt) / rig.radius;
+    rig.spin.forEach((w) => (w.rotation.x += roll));
+    rig.steer.forEach((g) => (g.rotation.y = state.steer * 0.5)); // up to ~29 degrees, + is left
+  } else {
+    car.userData.wheels.forEach((w) => (w.rotation.x += state.v * dt * 1.8));
+  }
 
   // chase camera (orbits slowly around car on intro)
   if (!started) {
@@ -604,4 +645,4 @@ addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'c' && started 
 paintCam();
 $('toClassic').onclick = () => enterLanding(true);
 
-if (import.meta.env.DEV) window.__bolt = { state, zones, keys, touchKeys, car };
+if (import.meta.env.DEV) window.__bolt = { state, zones, keys, touchKeys, car, audio };

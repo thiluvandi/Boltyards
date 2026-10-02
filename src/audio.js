@@ -187,6 +187,46 @@ export function createAudio() {
   }
 
   // ----- public API -----
+  // ----- phones: keep sound on even with the silent switch, and wake after interruptions -----
+  let keepAliveEl = null;
+  function silentWavUrl() {
+    const rate = 8000, n = rate; // one second of silence
+    const buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+    const w = (o, str) => [...str].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+    w(36, 'data'); v.setUint32(40, n, true);
+    new Uint8Array(buf, 44).fill(128);
+    return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+  }
+  function unlockMobile() {
+    // iOS 16.4+: treat the page as media playback so the ringer switch doesn't mute Web Audio
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* ignore */ }
+    // older iOS: a playing <audio> element does the same job
+    try {
+      if (!keepAliveEl) {
+        keepAliveEl = new Audio(silentWavUrl());
+        keepAliveEl.loop = true;
+        keepAliveEl.setAttribute('playsinline', '');
+        keepAliveEl.volume = 0.01;
+      }
+      keepAliveEl.play().catch(() => {});
+    } catch { /* ignore */ }
+    // a silent one-sample buffer played inside the tap unlocks the context
+    try {
+      const s = ctx.createBufferSource(); s.buffer = ctx.createBuffer(1, 1, 22050);
+      s.connect(ctx.destination); s.start(0);
+    } catch { /* ignore */ }
+  }
+  const wake = () => {
+    if (!active || !ctx || ctx.state === 'running') return;
+    ctx.resume().catch(() => {});
+    keepAliveEl?.play().catch(() => {});
+  };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+  document.addEventListener('pointerdown', wake, true); // phones suspend audio when you switch apps; any touch restarts it
+
   function start() {
     if (!ctx) {
       build();
@@ -195,13 +235,14 @@ export function createAudio() {
       loadSample();
       scheduleMusic();
     }
-    if (ctx.state === 'suspended') ctx.resume();
+    unlockMobile();
+    if (ctx.state !== 'running') ctx.resume().catch(() => {});
     active = true;
   }
   function setActive(on) {
     active = on;
     if (!ctx) return;
-    if (on) ctx.resume(); else ctx.suspend();
+    if (on) { ctx.resume(); keepAliveEl?.play().catch(() => {}); } else { ctx.suspend(); keepAliveEl?.pause(); }
   }
 
   // 4-speed gearbox like the real 930: [start, top] speed of each gear in world units/s
@@ -329,5 +370,5 @@ export function createAudio() {
     if (master) master.gain.setTargetAtTime(m ? 0 : 0.8, ctx.currentTime, 0.05);
   }
 
-  return { start, setActive, update, parked, bump, setMuted, get muted() { return muted; } };
+  return { start, setActive, update, parked, bump, setMuted, get muted() { return muted; }, get state() { return ctx ? ctx.state : 'none'; } };
 }
