@@ -147,3 +147,7 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 canvas#world { touch-action: none; cursor: grab; }
 canvas#world.grabbing { cursor: grabbing; }
 a.btn { color: var(--black); text-decoration: none; }
+
+.c-legal { margin-top: 34px; padding-top: 22px; border-top: 1px solid #333; display: flex; gap: 8px 24px; flex-wrap: wrap; font-size: 12px; letter-spacing: .06em; color: #aaa; }
+.c-foot .c-legal a { color: #ddd; text-decoration: none; }
+.c-foot .c-legal a:hover { color: var(--yellow); text-decoration: underline; }

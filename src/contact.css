@@ -97,3 +97,8 @@ a.row:hover span { text-decoration: underline; }
   .brand b { letter-spacing: .25em; font-size: 12px; }
   .hero { padding-left: 16px; padding-right: 16px; }
 }
+
+.fine a { color: inherit; font-weight: 600; text-decoration: underline; text-decoration-color: var(--yellow); text-underline-offset: 2px; }
+.foot-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.foot-links a { color: #ddd; text-decoration: none; }
+.foot-links a:hover { color: var(--yellow); }

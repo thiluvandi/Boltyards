@@ -35,6 +35,7 @@ function buildClassic() {
       <p><a href="tel:${BRAND.phone}">${BRAND.phone}</a></p>
       <p><a href="mailto:${BRAND.email}">${BRAND.email}</a></p>
       <p>${BRAND.address}</p>
+      <div class="c-legal"><span>© ${new Date().getFullYear()} Bolt Yards</span><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a></div>
     </footer>`;
 }
 buildClassic();
