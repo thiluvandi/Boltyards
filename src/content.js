@@ -76,13 +76,13 @@ export const BUILDINGS = [
   },
   {
     id: 'about',
-    sign: 'THE FOUNDER',
-    title: 'Aditya Reddy, Founder',
+    sign: 'HQ',
+    title: 'Bolt Yards HQ',
     pos: [-66, -46],
     size: [20, 14, 13],
     body:
       'Bolt Yards is led by Aditya Reddy, with one goal: build digital systems that scale for businesses, from the first prototype to the day it runs the whole firm.',
-    tags: ['Founder', 'Bengaluru'],
+    tags: ['HQ', 'Bengaluru'],
   },
 ];
 
