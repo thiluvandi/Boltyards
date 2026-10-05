@@ -51,7 +51,7 @@ kbd { background: var(--yellow); color: var(--black); padding: 2px 9px; border-r
 
 
 /* Panel */
-#panel { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+#panel, #reward { position: fixed; inset: 0; z-index: 30; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
 .card { position: relative; background: #fff; max-width: 520px; width: 100%; border-radius: 22px; padding: 38px 34px 34px; border-top: 8px solid var(--yellow); box-shadow: 0 30px 80px rgba(0,0,0,.35); animation: pop .25s ease-out; max-height: 90vh; overflow: auto; }
 @keyframes pop { from { transform: scale(.92); opacity: 0; } }
 #close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--black); color: var(--yellow); cursor: pointer; font-size: 14px; }
@@ -151,3 +151,25 @@ a.btn { color: var(--black); text-decoration: none; }
 .c-legal { margin-top: 34px; padding-top: 22px; border-top: 1px solid #333; display: flex; gap: 8px 24px; flex-wrap: wrap; font-size: 12px; letter-spacing: .06em; color: #aaa; }
 .c-foot .c-legal a { color: #ddd; text-decoration: none; }
 .c-foot .c-legal a:hover { color: var(--yellow); text-decoration: underline; }
+
+/* ---------- exploration reward ---------- */
+#visited { cursor: default; }
+#visited .done-txt { display: none; }
+#visited.done { background: var(--yellow); color: var(--black); font-weight: 700; cursor: pointer; animation: pulseBtn 1.8s ease-in-out infinite; }
+#visited.done .count-txt { display: none; }
+#visited.done .done-txt { display: inline; }
+@keyframes pulseBtn { 50% { transform: translateX(-50%) scale(1.05); } }
+.reward-card { text-align: center; padding-top: 44px; }
+.reward-card .star { width: 76px; height: 76px; border-radius: 50%; background: var(--yellow); display: grid; place-items: center; font-size: 38px; margin: 0 auto 16px; animation: pop .45s ease-out; box-shadow: 0 0 0 10px rgba(253, 194, 11, .25); }
+.reward-card .bar { margin: 18px auto; }
+.reward-card .rbody { line-height: 1.7; color: #333; font-size: 15px; }
+.reward-card .btn { margin-top: 24px; display: flex; justify-content: center; width: 100%; line-height: 1.4; text-align: center; }
+.reward-card .link-btn { margin-top: 14px; background: none; border: none; font: 600 12px 'Montserrat', sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #6b6b6b; text-decoration: underline; cursor: pointer; }
+.card .x { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--black); color: var(--yellow); cursor: pointer; font-size: 14px; }
+@keyframes pulseBtnLeft { 50% { transform: scale(1.05); } }
+@media (max-width: 560px) {
+  /* sit beside the logo so it never runs into the Classic site button */
+  #hud #visited { left: 66px; transform: none; top: 17px; }
+  #hud #visited.done { font-size: 10px; padding: 6px 10px; max-width: calc(100vw - 66px - 146px); text-align: center; line-height: 1.25; animation-name: pulseBtnLeft; }
+  #visited.done .long { display: none; }
+}

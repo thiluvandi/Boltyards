@@ -424,14 +424,36 @@ function openPanel(b) {
     ? `<div class="contact-row"><i>📞</i><a href="tel:${BRAND.phone}">${BRAND.phone}</a></div>
        <div class="contact-row"><i>✉</i><a href="mailto:${BRAND.email}">${BRAND.email}</a></div>
        <div class="contact-row"><i>📍</i><span>${BRAND.address}</span></div>
-       <a class="btn dark" href="/contact.html">Send us a message →</a>`
+       <a class="btn dark" href="/contact.html">Book a free 30-minute consultation →</a>`
     : '';
   const link = $('pLink');
   if (b.url) { link.href = b.url; link.hidden = false; } else link.hidden = true;
   $('panel').hidden = false;
   for (const k in keys) keys[k] = false;
 }
-function closePanel() { panelOpen = false; $('panel').hidden = true; }
+let rewardPending = false, rewardShown = false, allExplored = false;
+function closePanel() {
+  panelOpen = false;
+  $('panel').hidden = true;
+  $('reward').hidden = true;
+  if (rewardPending) { rewardPending = false; setTimeout(showReward, 450); } // let the last building panel close first
+}
+// Reward for exploring all buildings: a prompt to book a free consultation (sent with a tag so we know it came from the tour)
+function showReward() {
+  if (!started) return;
+  if (!rewardShown) { rewardShown = true; audio.parked(); }
+  allExplored = true;
+  $('visited').classList.add('done');
+  panelOpen = true;
+  $('panel').hidden = true;
+  $('reward').hidden = false;
+  for (const k in keys) keys[k] = false;
+}
+$('rewardClose').onclick = closePanel;
+$('rewardKeep').onclick = closePanel;
+$('reward').addEventListener('click', (e) => { if (e.target === $('reward')) closePanel(); });
+$('visited').addEventListener('click', () => { if (allExplored && started && !panelOpen) showReward(); });
+$('visited').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && allExplored && started && !panelOpen) { e.preventDefault(); showReward(); } });
 $('close').onclick = closePanel;
 $('prompt').addEventListener('click', () => interact());
 document.addEventListener('contextmenu', (e) => { if (started) e.preventDefault(); }); // no long-press menu while driving
@@ -442,7 +464,12 @@ function interact() {
   if (panelOpen) return closePanel();
   if (nearZone) {
     openPanel(nearZone.b);
-    if (!nearZone.visited) { nearZone.visited = true; $('vcount').textContent = zones.filter((z) => z.visited).length; }
+    if (!nearZone.visited) {
+      nearZone.visited = true;
+      const n = zones.filter((z) => z.visited).length;
+      $('vcount').textContent = n;
+      if (n === zones.length && !rewardShown) rewardPending = true; // shown when this building's panel is closed
+    }
   }
 }
 

@@ -54,7 +54,7 @@
         <span class="logo-mark hud-logo" aria-hidden="true"></span>
         <span>BOLT YARDS</span>
       </div>
-      <div id="visited">Explored <b id="vcount">0</b>/<span id="vtotal">8</span></div>
+      <div id="visited" role="button" tabindex="0"><span class="count-txt">Explored <b id="vcount">0</b>/<span id="vtotal">8</span></span><span class="done-txt">★ <span class="long">All explored · </span>Book a free consultation</span></div>
       <button id="mute" class="btn small" aria-label="Toggle sound"></button>
       <button id="cam" class="btn small" aria-label="Change camera"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Chase view</span></button>
       <button id="toClassic" class="btn small">Classic site</button>
@@ -85,6 +85,20 @@
         <div id="pTags"></div>
         <div id="pExtra"></div>
         <a id="pLink" class="btn dark" target="_blank" rel="noopener" hidden>Visit project ↗</a>
+      </div>
+    </div>
+
+    <!-- Reward: shown once all buildings have been explored -->
+    <div id="reward" hidden>
+      <div class="card reward-card" role="dialog" aria-labelledby="rewardTitle">
+        <button id="rewardClose" class="x" aria-label="Close">✕</button>
+        <div class="star" aria-hidden="true">★</div>
+        <p class="kind">Tour complete</p>
+        <h2 id="rewardTitle">You've seen it all!</h2>
+        <div class="bar"></div>
+        <p class="rbody">You explored every building at Bolt Yards. If anything you saw sounds like what your business needs, let's talk about it. The first 30 minutes are on us.</p>
+        <a id="rewardCta" class="btn dark" href="/contact.html?milestone=explored_all">Book a free 30-minute consultation →</a>
+        <button id="rewardKeep" class="link-btn" type="button">Keep driving</button>
       </div>
     </div>
 

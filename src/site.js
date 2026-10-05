@@ -30,7 +30,7 @@ function buildClassic() {
     <footer class="c-foot" id="contact">
       <h2 style="letter-spacing:.35em;font-size:12px;color:#fdc20b;margin-bottom:20px">CONTACT</h2>
       <p style="margin-bottom:18px;font-size:20px;font-weight:600">Have a project in mind?</p>
-      <a class="btn c-cta" href="/contact.html">Send us a message →</a>
+      <a class="btn c-cta" href="/contact.html">Book a free 30-minute consultation →</a>
       <div style="height:22px"></div>
       <p><a href="tel:${BRAND.phone}">${BRAND.phone}</a></p>
       <p><a href="mailto:${BRAND.email}">${BRAND.email}</a></p>

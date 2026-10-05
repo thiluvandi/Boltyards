@@ -12,6 +12,8 @@ function read() {
 
 export function captureAttribution() {
   const q = new URLSearchParams(location.search);
+  const milestone = q.get('milestone');
+  if (milestone) { try { localStorage.setItem('by-milestone', milestone); } catch { /* ignore */ } }
   const utm = { source: q.get('utm_source'), medium: q.get('utm_medium'), campaign: q.get('utm_campaign'), content: q.get('utm_content') };
   let ref = '';
   try { if (document.referrer) { const h = new URL(document.referrer).hostname; if (h !== location.hostname) ref = h.replace(/^www\./, ''); } } catch { /* ignore */ }
@@ -27,6 +29,13 @@ export function captureAttribution() {
 
 /** Plain-text fields for the enquiry email */
 export function attributionFields() {
+  let milestone = '';
+  try { milestone = localStorage.getItem('by-milestone') || ''; } catch { /* ignore */ }
+  const extra = milestone === 'explored_all' ? { game_milestone: 'Explored all 8 buildings in the 3D tour' } : {};
+  return { ...baseFields(), ...extra };
+}
+
+function baseFields() {
   const a = read();
   if (!a) return { found_us_via: 'Direct / unknown' };
   const tag = [a.source, a.medium, a.campaign, a.content].filter(Boolean).join(' / ');
