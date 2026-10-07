@@ -742,5 +742,9 @@ camBtn.onclick = nextCam;
 addEventListener('keydown', (e) => { if (e.key.toLowerCase() === 'c' && started && !panelOpen) nextCam(); });
 paintCam();
 $('toClassic').onclick = () => enterLanding(true);
+// the logo/name in the top-left also leads back to the website
+const brandBtn = document.querySelector('#hud .brand');
+brandBtn.addEventListener('click', () => enterLanding(true));
+brandBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter') enterLanding(true); });
 
 if (import.meta.env.DEV) window.__bolt = { state, zones, keys, touchKeys, car, audio, orbit, contact };

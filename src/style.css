@@ -173,3 +173,6 @@ a.btn { color: var(--black); text-decoration: none; }
   #hud #visited.done { font-size: 10px; padding: 6px 10px; max-width: calc(100vw - 66px - 146px); text-align: center; line-height: 1.25; animation-name: pulseBtnLeft; }
   #visited.done .long { display: none; }
 }
+
+#hud .brand { cursor: pointer; transition: background .15s; }
+#hud .brand:hover { background: #fff; }
