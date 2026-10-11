@@ -62,7 +62,7 @@ export const BUILDINGS = [
     size: [22, 18, 14],
     body: 'An automated annual GST reconciliation tool, built on request to replace hours of manual matching.',
     tags: ['Automation', 'GST', 'Finance'],
-    url: 'https://csg-gst.vercel.app',
+    url: 'https://gst.boltyards.com',
   },
   {
     id: 'gstr-ext',
