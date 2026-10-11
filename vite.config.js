@@ -10,6 +10,7 @@ export default defineConfig({
         contact: fileURLToPath(new URL('./contact.html', import.meta.url)),
         privacy: fileURLToPath(new URL('./privacy.html', import.meta.url)),
         terms: fileURLToPath(new URL('./terms.html', import.meta.url)),
+        gstrPrivacy: fileURLToPath(new URL('./gstr-downloader-privacy.html', import.meta.url)),
       },
     },
   },

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GSTR downloader GSTR downloader Privacy Policy | Bolt Yards</title>
+    <meta name="description" content="What the GSTR downloader by BoltYards.com Chrome extension does with your GST and Tally data." />
+    <link rel="canonical" href="https://www.boltyards.com/gstr-downloader/privacy" />
+    <meta name="theme-color" content="#FDC20B" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bolt Yards" />
+    <meta property="og:title" content="GSTR downloader Privacy Policy | Bolt Yards" />
+    <meta property="og:description" content="What the GSTR downloader by BoltYards.com Chrome extension does with your GST and Tally data." />
+    <meta property="og:url" content="https://www.boltyards.com/gstr-downloader/privacy" />
+    <meta property="og:image" content="https://www.boltyards.com/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon-v2.svg" />
+    <link rel="stylesheet" href="/src/legal.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="/" aria-label="Bolt Yards home">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <b>BOLT YARDS</b>
+      </a>
+      <a class="btn small" href="/">← Back to home</a>
+    </header>
+
+    <section class="hero slim">
+      <p class="eyebrow">LEGAL</p>
+      <h1>GSTR downloader — Privacy Policy</h1>
+      <p class="sub">Last updated: 11 October 2026</p>
+    </section>
+
+    <main class="legal-wrap">
+      <article class="card legal">
+        <p class="lead">This policy covers the <b>GSTR downloader by BoltYards.com</b> Chrome extension and the GST Reconciliation page it opens at <a href="https://gst.boltyards.com/">gst.boltyards.com</a>. The short version: your GST and accounting data stays on your own computer, and we do not receive it.</p>
+
+        <h2>1. Who we are</h2>
+        <p>The extension is published by <b>Bolt Yards</b>, a sole proprietorship of <b>Aditya Reddy</b>, #243, 5th A Main, Gnanabharthi Layout, Kengeri S.T, Bengaluru - 560059, India. Contact: <a href="mailto:boltyardsindia@gmail.com">boltyardsindia@gmail.com</a>.</p>
+
+        <h2>2. What the extension does</h2>
+        <p>While you are logged in to the GST portal yourself, the extension downloads returns (GSTR-1, 2A, 2B, 3B, 9) for the months you choose, using your own logged-in session, and saves them to your Downloads folder. It can also send those files to the GST Reconciliation page, and read purchase entries from Tally running on your own computer.</p>
+
+        <h2>3. What data it handles</h2>
+        <ul>
+          <li><b>GST portal data</b> &mdash; return data, your GSTIN and your business name, read from the portal pages you are logged in to.</li>
+          <li><b>Tally data</b> &mdash; purchase vouchers (supplier, GSTIN, invoice number, date, amounts), read from Tally on <code>localhost:9000</code> on your own machine, only when you click the Tally button.</li>
+          <li><b>Progress information</b> &mdash; which months are done, kept in your browser's session storage so the popup can resume. It is cleared when the browser session ends.</li>
+        </ul>
+        <p>We do <b>not</b> collect your GST login, password, OTP or any credentials, and the extension never asks for them.</p>
+
+        <h2>4. Where the data goes</h2>
+        <ul>
+          <li><b>Your computer.</b> Downloaded files are saved locally by your browser.</li>
+          <li><b>The GST portal.</b> The extension talks to <code>*.gst.gov.in</code> the same way the portal's own pages do.</li>
+          <li><b>Tally.</b> Requests go to <code>localhost:9000</code> only. They do not leave your computer.</li>
+          <li><b>GST Reconciliation page.</b> When you use "Send to Reconciliation" or the Tally button, files are handed to the page at <code>gst.boltyards.com</code> inside your browser tab. That page reads and compares them in your browser; it does not upload them to a server.</li>
+        </ul>
+        <p>We have no server that receives your returns, Tally data or reconciliation results, and no advertising, analytics or tracking code is included in the extension or the reconciliation page. We do not sell, rent or share your data with anyone.</p>
+
+        <h2>5. Permissions, and why</h2>
+        <ul>
+          <li><b>*.gst.gov.in</b> &mdash; read the returns and business name from the portal pages you open.</li>
+          <li><b>tabs, scripting</b> &mdash; find your portal tab and move it between the portal's own sections, as a click on a link would.</li>
+          <li><b>downloads</b> &mdash; save the files to folders in your Downloads directory.</li>
+          <li><b>storage</b> &mdash; remember progress so the popup resumes if it is closed.</li>
+          <li><b>localhost:9000</b> &mdash; talk to Tally on your own computer.</li>
+          <li><b>gst.boltyards.com</b> &mdash; hand the downloaded files to the reconciliation page.</li>
+        </ul>
+
+        <h2>6. Hosting logs</h2>
+        <p>The reconciliation page is a static page hosted on Vercel, like the rest of this website. Like any web host, Vercel may log technical details such as IP address and the page requested. These logs do not contain your files.</p>
+
+        <h2>7. Your choices</h2>
+        <p>Delete the downloaded files from your Downloads folder at any time. Removing the extension removes its stored progress information. Because we hold none of your data, there is nothing on our side to delete; if you have questions or requests, email <a href="mailto:boltyardsindia@gmail.com">boltyardsindia@gmail.com</a>.</p>
+
+        <h2>8. Independence from GSTN</h2>
+        <p>This extension is an independent tool. It is not affiliated with, endorsed by or sponsored by the Goods and Services Tax Network or the Government of India. You are responsible for using it only with your own logged-in account and in line with the portal's terms.</p>
+
+        <h2>9. Changes</h2>
+        <p>If the extension's data handling changes, for example if a licence check is added, we will update this page and the "last updated" date before the change ships.</p>
+
+      </article>
+    </main>
+
+    <footer class="foot">
+      <span>© <span id="year"></span> Bolt Yards</span>
+      <nav class="foot-links"><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a><a href="/contact.html">Contact</a></nav>
+    </footer>
+
+    <script type="module" src="/src/legal.js"></script>
+  </body>
+</html>

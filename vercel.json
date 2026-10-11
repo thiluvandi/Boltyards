@@ -1,8 +1,21 @@
 {
   "cleanUrls": false,
   "rewrites": [
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms", "destination": "/terms.html" }
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/gstr-downloader/privacy",
+      "destination": "/gstr-downloader-privacy.html"
+    }
   ]
 }
