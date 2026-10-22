@@ -73,7 +73,7 @@ export const BUILDINGS = [
     size: [20, 16, 13],
     body: 'A Chrome extension that automates downloading GSTR returns, turning a repetitive portal chore into one click.',
     tags: ['Chrome Extension', 'Automation', 'GST'],
-    video: { src: '/videos/gstr-downloader.mp4', poster: '/videos/gstr-downloader.jpg', label: 'Watch it in action' },
+    video: { src: '/videos/gstr-downloader-v2.mp4', poster: '/videos/gstr-downloader-v2.jpg', label: 'Watch it in action' },
   },
   {
     id: 'about',
