@@ -393,7 +393,7 @@ const down = (k) => keys[k] || touchKeys[k];
 addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
   keys[k] = true;
-  if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) e.preventDefault();
+  if (!panelOpen && ['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) e.preventDefault();
   if (k === 'e') interact();
   if (k === 'escape') closePanel();
 });
@@ -425,7 +425,15 @@ function openPanel(b) {
        <div class="contact-row"><i>✉</i><a href="mailto:${BRAND.email}">${BRAND.email}</a></div>
        <div class="contact-row"><i>📍</i><span>${BRAND.address}</span></div>
        <a class="btn dark" href="/contact.html">Book a free 30-minute consultation →</a>`
-    : '';
+    : b.video
+      ? `<p class="vid-label">${b.video.label}</p><video class="demo-video" controls playsinline preload="none" poster="${b.video.poster}" src="${b.video.src}"></video>`
+      : '';
+  // the game's music and engine pause while a video plays, and come back when it stops
+  const vid = $('pExtra').querySelector('video');
+  if (vid) {
+    vid.addEventListener('play', () => audio.setActive(false));
+    ['pause', 'ended'].forEach((ev) => vid.addEventListener(ev, () => { if (started) audio.setActive(true); }));
+  }
   const link = $('pLink');
   if (b.url) { link.href = b.url; link.hidden = false; } else link.hidden = true;
   $('panel').hidden = false;
@@ -433,6 +441,7 @@ function openPanel(b) {
 }
 let rewardPending = false, rewardShown = false, allExplored = false;
 function closePanel() {
+  $('pExtra').querySelectorAll('video').forEach((v) => v.pause());
   panelOpen = false;
   $('panel').hidden = true;
   $('reward').hidden = true;

@@ -21,8 +21,9 @@ function buildClassic() {
     </section>
     <section class="c-section"><h2>Our work</h2>
       <div class="c-grid">${works.map((b) => `
-        <${b.url ? `a href="${b.url}" target="_blank" rel="noopener"` : 'div'} class="c-card">
+        <${b.url ? `a href="${b.url}" target="_blank" rel="noopener"` : 'div'} class="c-card${b.video ? ' c-card-video' : ''}">
           <span class="tag-chip">${b.kind}</span><h3>${b.title}</h3><p>${b.body}</p>
+          ${b.video ? `<p class="vid-label">${b.video.label}</p><video class="demo-video" controls playsinline preload="none" poster="${b.video.poster}" src="${b.video.src}"></video>` : ''}
         </${b.url ? 'a' : 'div'}>`).join('')}
       </div>
     </section>
