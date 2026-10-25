@@ -31,23 +31,24 @@
     <section class="hero slim">
       <p class="eyebrow">LEGAL</p>
       <h1>GSTR downloader — Privacy Policy</h1>
-      <p class="sub">Last updated: 11 October 2026</p>
+      <p class="sub">Last updated: 25 October 2026</p>
     </section>
 
     <main class="legal-wrap">
       <article class="card legal">
-        <p class="lead">This policy covers the <b>GSTR downloader by BoltYards.com</b> Chrome extension and the GST Reconciliation page it opens at <a href="https://gst.boltyards.com/">gst.boltyards.com</a>. The short version: your GST and accounting data stays on your own computer, and we do not receive it.</p>
+        <p class="lead">This policy covers the <b>GSTR downloader by BoltYards.com</b> Chrome extension and the GST Reconciliation page it opens at <a href="https://gst.boltyards.com/">gst.boltyards.com</a>. The short version: your GST and accounting data stays on your own computer, and we do not receive it. The extension can <b>read from</b> Tally and, only after you review and confirm, <b>create</b> purchase vouchers and supplier ledgers in it &mdash; see section 5.</p>
 
         <h2>1. Who we are</h2>
         <p>The extension is published by <b>Bolt Yards</b>, a sole proprietorship of <b>Aditya Reddy</b>, #243, 5th A Main, Gnanabharthi Layout, Kengeri S.T, Bengaluru - 560059, India. Contact: <a href="mailto:boltyardsindia@gmail.com">boltyardsindia@gmail.com</a>.</p>
 
         <h2>2. What the extension does</h2>
-        <p>While you are logged in to the GST portal yourself, the extension downloads returns (GSTR-1, 2A, 2B, 3B, 9) for the months you choose, using your own logged-in session, and saves them to your Downloads folder. It can also send those files to the GST Reconciliation page, and read purchase entries from Tally running on your own computer.</p>
+        <p>While you are logged in to the GST portal yourself, the extension downloads returns (GSTR-1, 2A, 2B, 3B, 9) for the months you choose, using your own logged-in session, and saves them to your Downloads folder. It can also send those files to the GST Reconciliation page, and read purchase entries from Tally running on your own computer. From the reconciliation page it can also, when you ask it to, create purchase vouchers (or debit notes) in Tally for invoices that appear in your GSTR-2B but are missing from your books.</p>
 
         <h2>3. What data it handles</h2>
         <ul>
           <li><b>GST portal data</b> &mdash; return data, your GSTIN and your business name, read from the portal pages you are logged in to.</li>
-          <li><b>Tally data</b> &mdash; purchase vouchers (supplier, GSTIN, invoice number, date, amounts), read from Tally on <code>localhost:9000</code> on your own machine, only when you click the Tally button.</li>
+          <li><b>Tally data (read)</b> &mdash; the open company's name and ledger names, and purchase vouchers (supplier, GSTIN, invoice number, date, amounts), read from Tally on <code>localhost:9000</code> on your own machine, only when you click a Tally button or use the import on the reconciliation page.</li>
+          <li><b>Tally data (written)</b> &mdash; if you choose to book missing GSTR-2B invoices into Tally, the extension sends Tally the invoice details from your own GSTR-2B (supplier name and GSTIN, invoice number and date, taxable value and tax amounts) so it can create the entries described in section 5.</li>
           <li><b>Progress information</b> &mdash; which months are done, kept in your browser's session storage so the popup can resume. It is cleared when the browser session ends.</li>
         </ul>
         <p>We do <b>not</b> collect your GST login, password, OTP or any credentials, and the extension never asks for them.</p>
@@ -56,31 +57,42 @@
         <ul>
           <li><b>Your computer.</b> Downloaded files are saved locally by your browser.</li>
           <li><b>The GST portal.</b> The extension talks to <code>*.gst.gov.in</code> the same way the portal's own pages do.</li>
-          <li><b>Tally.</b> Requests go to <code>localhost:9000</code> only. They do not leave your computer.</li>
-          <li><b>GST Reconciliation page.</b> When you use "Send to Reconciliation" or the Tally button, files are handed to the page at <code>gst.boltyards.com</code> inside your browser tab. That page reads and compares them in your browser; it does not upload them to a server.</li>
+          <li><b>Tally.</b> Requests go to <code>localhost:9000</code> only, both for reading and for creating entries. They do not leave your computer.</li>
+          <li><b>GST Reconciliation page.</b> When you use "Send to Reconciliation" or a Tally button, files and Tally entries are handed to the page at <code>gst.boltyards.com</code> inside your browser tab. That page reads and compares them in your browser; it does not upload them to a server.</li>
         </ul>
         <p>We have no server that receives your returns, Tally data or reconciliation results, and no advertising, analytics or tracking code is included in the extension or the reconciliation page. We do not sell, rent or share your data with anyone.</p>
 
-        <h2>5. Permissions, and why</h2>
+        <h2>5. What the extension can change in Tally</h2>
+        <p>Reading from Tally changes nothing. Writing is a separate step on the reconciliation page, and it works like this:</p>
+        <ul>
+          <li><b>You choose.</b> After comparing GSTR-2B with your books, you tick the invoices you want booked. Reverse-charge invoices and invoices where ITC is not available are not offered.</li>
+          <li><b>You review.</b> A preview shows the company it will post into, the ledgers to be used, any new supplier ledgers to be created, and the totals. Nothing is written until you click the confirm button.</li>
+          <li><b>What it creates.</b> A purchase voucher for each selected invoice (a debit note for a credit note), with the supplier's invoice number and date as the reference and the narration &ldquo;Booked from GSTR-2B&rdquo;. If a supplier is not already a ledger in Tally, it creates one under Sundry Creditors with the GSTIN from the invoice.</li>
+          <li><b>What it never does.</b> It only <i>creates</i> new entries. It does not edit, cancel or delete any existing voucher or ledger, and it does not touch any company other than the one you confirm.</li>
+          <li><b>Who can ask.</b> Only the reconciliation page at <code>gst.boltyards.com</code> can send these requests to the extension; no other website can.</li>
+          <li><b>Undoing it.</b> You can delete any voucher or ledger the extension created from inside Tally, like any other entry. We recommend taking a Tally backup before booking a large batch.</li>
+        </ul>
+
+        <h2>6. Permissions, and why</h2>
         <ul>
           <li><b>*.gst.gov.in</b> &mdash; read the returns and business name from the portal pages you open.</li>
           <li><b>tabs, scripting</b> &mdash; find your portal tab and move it between the portal's own sections, as a click on a link would.</li>
           <li><b>downloads</b> &mdash; save the files to folders in your Downloads directory.</li>
           <li><b>storage</b> &mdash; remember progress so the popup resumes if it is closed.</li>
-          <li><b>localhost:9000</b> &mdash; talk to Tally on your own computer.</li>
-          <li><b>gst.boltyards.com</b> &mdash; hand the downloaded files to the reconciliation page.</li>
+          <li><b>localhost:9000</b> &mdash; talk to Tally on your own computer: read purchase entries and ledger names, and, only after you confirm, create vouchers and supplier ledgers.</li>
+          <li><b>gst.boltyards.com</b> &mdash; hand the downloaded files to the reconciliation page, and pass its Tally requests (read, and confirmed writes) on to Tally.</li>
         </ul>
 
-        <h2>6. Hosting logs</h2>
+        <h2>7. Hosting logs</h2>
         <p>The reconciliation page is a static page hosted on Vercel, like the rest of this website. Like any web host, Vercel may log technical details such as IP address and the page requested. These logs do not contain your files.</p>
 
-        <h2>7. Your choices</h2>
-        <p>Delete the downloaded files from your Downloads folder at any time. Removing the extension removes its stored progress information. Because we hold none of your data, there is nothing on our side to delete; if you have questions or requests, email <a href="mailto:boltyardsindia@gmail.com">boltyardsindia@gmail.com</a>.</p>
+        <h2>8. Your choices</h2>
+        <p>Delete the downloaded files from your Downloads folder at any time. Removing the extension removes its stored progress information. Anything created in Tally stays in Tally under your control, and you can delete it there. Because we hold none of your data, there is nothing on our side to delete; if you have questions or requests, email <a href="mailto:boltyardsindia@gmail.com">boltyardsindia@gmail.com</a>.</p>
 
-        <h2>8. Independence from GSTN</h2>
+        <h2>9. Independence from GSTN</h2>
         <p>This extension is an independent tool. It is not affiliated with, endorsed by or sponsored by the Goods and Services Tax Network or the Government of India. You are responsible for using it only with your own logged-in account and in line with the portal's terms.</p>
 
-        <h2>9. Changes</h2>
+        <h2>10. Changes</h2>
         <p>If the extension's data handling changes, for example if a licence check is added, we will update this page and the "last updated" date before the change ships.</p>
 
       </article>
